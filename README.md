@@ -1,6 +1,7 @@
 # campus360
 
 A new Flutter project.
+This is the First Android App Project from AMIO CSEDU28.
 
 ## Getting Started
 
