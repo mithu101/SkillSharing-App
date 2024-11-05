@@ -1,6 +1,6 @@
 # campus360
 
-It is our first android app
+A new Flutter project.
 
 ## Getting Started
 

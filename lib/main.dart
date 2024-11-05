@@ -8,6 +8,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Login & Sign Up App',
       theme: ThemeData(
         primarySwatch: Colors.blue,
@@ -71,7 +72,7 @@ class PlaceholderScreen extends StatelessWidget {
       body: Center(
         child: Text(
           title,
-          style: TextStyle(fontSize: 24),
+          style: TextStyle(fontSize: 28),
         ),
       ),
     );
