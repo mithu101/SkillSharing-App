@@ -72,7 +72,7 @@ class PlaceholderScreen extends StatelessWidget {
       body: Center(
         child: Text(
           title,
-          style: TextStyle(fontSize: 24),
+          style: TextStyle(fontSize: 28),
         ),
       ),
     );

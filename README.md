@@ -1,7 +1,6 @@
 # campus360
 
-A new Flutter project.
-
+Campus360 is an Android app designed to enhance the campus experience by providing students and staff with easy access to essential campus resources, events, and navigation all in one platform
 ## Getting Started
 
 This project is a starting point for a Flutter application.
@@ -14,3 +13,4 @@ A few resources to get you started if this is your first Flutter project:
 For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
+
