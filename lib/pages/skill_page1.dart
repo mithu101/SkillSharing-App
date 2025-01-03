@@ -1,14 +1,15 @@
 import 'dart:io';
 import 'dart:typed_data';
-import 'package:campus360/pages/skillPage2.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'user_state.dart'; // Import your UserState model
+import 'skillPage2.dart'; // Import your SkillPage2
 
 class SkillPage1 extends StatelessWidget {
   final Uint8List? webImageBytes; // For web
   final File? mobileImage;
-  final String userSkill; // User skill
+  final String userSkill;
 
-  // Constructor to receive image and skill
   SkillPage1(this.userSkill, {this.webImageBytes, this.mobileImage});
 
   @override
@@ -25,7 +26,12 @@ class SkillPage1 extends StatelessWidget {
         );
         return;
       }
-      // Save logic can be added here, for now just show a success message
+
+      // Update user data in the provider
+      final userState = Provider.of<UserState>(context, listen: false);
+      userState.setUserSkill(userSkillInfo);
+      userState.setUserImage(webImage: webImageBytes, mobileImage: mobileImage);
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
@@ -42,9 +48,9 @@ class SkillPage1 extends StatelessWidget {
         context,
         MaterialPageRoute(
           builder: (context) => SkillPage2(
-            userSkill: userSkill,             // Pass skill name
-            webImageBytes: webImageBytes,     // Pass image for web
-            mobileImage: mobileImage,         // Pass image for mobile
+            userSkill: userSkill, // Pass skill name
+            webImageBytes: webImageBytes, // Pass image for web
+            mobileImage: mobileImage, // Pass image for mobile
           ),
         ),
       );
@@ -55,8 +61,8 @@ class SkillPage1 extends StatelessWidget {
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              Color(0xFF00008B), // Deep blue
-              Colors.deepPurple, // Medium blue
+              Color(0xFF00008B),
+              Colors.deepPurple,
             ],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
@@ -86,10 +92,10 @@ class SkillPage1 extends StatelessWidget {
                       radius: 70,
                       backgroundColor: Colors.grey[300],
                       backgroundImage: mobileImage != null
-                          ? FileImage(mobileImage!) // For mobile
+                          ? FileImage(mobileImage!)
                           : (webImageBytes != null
-                          ? MemoryImage(webImageBytes!) // For web
-                          : null),
+                              ? MemoryImage(webImageBytes!)
+                              : null),
                     ),
                     SizedBox(height: 20),
                     // Skill label
@@ -107,7 +113,7 @@ class SkillPage1 extends StatelessWidget {
                         // Handle skill selection
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xFF7849F7), // Purple button color
+                        backgroundColor: Color(0xFF7849F7),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
@@ -123,10 +129,10 @@ class SkillPage1 extends StatelessWidget {
                     SizedBox(height: 20),
                     // Description text field
                     Container(
-                      width: 300, // Adjust width as needed
+                      width: 300,
                       padding: EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: Color(0xFF2C2B40), // Darker blue background for text field
+                        color: Color(0xFF2C2B40),
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: TextField(
@@ -134,7 +140,8 @@ class SkillPage1 extends StatelessWidget {
                         style: TextStyle(color: Colors.white),
                         maxLines: 5,
                         decoration: InputDecoration(
-                          hintText: "Tell other users a little bit about your skill.",
+                          hintText:
+                              "Tell other users a little bit about your skill.",
                           hintStyle: TextStyle(color: Colors.grey),
                           border: InputBorder.none,
                         ),
@@ -144,14 +151,11 @@ class SkillPage1 extends StatelessWidget {
                     // Save button
                     ElevatedButton(
                       onPressed: () {
-                        // Save the skill and description
                         _saveUserData();
-                        if(!skillInfoController.text.isEmpty){
-                          _goToSkillPage2(context); // Go to the next page after saving
-                        }
+                        _goToSkillPage2(context);
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xFFF7931E), // Orange button color
+                        backgroundColor: Color(0xFFF7931E),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20),
                         ),

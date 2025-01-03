@@ -22,6 +22,7 @@ dependencies:
   font_awesome_flutter: ^10.8.0
   flutter_animate: any
   image_picker: ^0.8.6
+  provider: ^6.0.5
 
 dev_dependencies:
   flutter_test:

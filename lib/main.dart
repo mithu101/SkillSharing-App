@@ -1,12 +1,22 @@
 import 'package:campus360/pages/input.dart';
+import 'package:campus360/pages/sign_up_page1.dart';
+import 'package:campus360/pages/sign_up_page2.dart';
+import 'package:campus360/pages/skill_grid_page.dart';
 import 'package:campus360/pages/splash_page.dart';
 import 'package:campus360/pages/splash_screen.dart';
+import 'package:campus360/pages/user_state.dart';
 import 'package:flutter/material.dart';
 import 'package:campus360/pages/onboarding_page1.dart';
- // Ensure this path is correct
+import 'package:provider/provider.dart';
+// Ensure this path is correct
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => UserState(),
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -75,12 +85,13 @@ class HomePage extends StatelessWidget {
                     height: 10.0,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: index == 0 ? Colors.black : Colors.white, // First dot black, others white
+                      color: index == 0
+                          ? Colors.black
+                          : Colors.white, // First dot black, others white
                     ),
                   );
                 }),
               ),
-
               const SizedBox(height: 20.0),
               Center(
                 child: TextButton(
@@ -106,4 +117,3 @@ class HomePage extends StatelessWidget {
     );
   }
 }
-

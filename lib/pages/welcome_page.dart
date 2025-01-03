@@ -1,5 +1,7 @@
 import 'package:campus360/pages/sign_up_page2.dart';
+import 'package:campus360/pages/user_state.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class WelcomePage extends StatelessWidget {
   final String name; // User's name
@@ -8,13 +10,16 @@ class WelcomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final userState = Provider.of<UserState>(context, listen: false);
+    userState.setUserName(name);
+
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
               Color(0xFF00008B), // Deep blue
-              Colors.deepPurple,// Medium blue
+              Colors.deepPurple, // Medium blue
             ],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
@@ -75,7 +80,10 @@ class WelcomePage extends StatelessWidget {
               child: GestureDetector(
                 onTap: () {
                   // Handle the skip action
-                  Navigator.push(context, MaterialPageRoute(builder: (context)=> ProfilePicturePage()));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => ProfilePicturePage()));
                 },
                 child: Text(
                   "Skip",

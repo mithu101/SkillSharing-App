@@ -4,16 +4,17 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
+import 'skill_information_page.dart'; // Import the confirmation page
+
 class SkillPage2 extends StatefulWidget {
   final String userSkill;
   final Uint8List? webImageBytes;
   final File? mobileImage;
 
-  // Named constructor for receiving parameters
   SkillPage2({
-    required this.userSkill, // Required parameter
-    this.webImageBytes,      // Optional parameter for web image
-    this.mobileImage,        // Optional parameter for mobile image
+    required this.userSkill,
+    this.webImageBytes,
+    this.mobileImage,
   });
 
   @override
@@ -21,8 +22,8 @@ class SkillPage2 extends StatefulWidget {
 }
 
 class _SkillPage2State extends State<SkillPage2> {
-  List<File> _uploadedImages = []; // List to store mobile uploaded images
-  List<Uint8List> _uploadedWebImages = []; // List to store web uploaded images
+  List<File> _uploadedImages = []; // For mobile images
+  List<Uint8List> _uploadedWebImages = []; // For web images
 
   // Image picker function for mobile and web
   Future<void> _getImage(ImageSource source) async {
@@ -32,15 +33,13 @@ class _SkillPage2State extends State<SkillPage2> {
 
       if (pickedFile != null) {
         if (kIsWeb) {
-          // Web-specific code to read the image as bytes
           final webBytes = await pickedFile.readAsBytes();
           setState(() {
-            _uploadedWebImages.add(webBytes); // Add web image to the list
+            _uploadedWebImages.add(webBytes);
           });
         } else {
-          // Mobile-specific code to handle File
           setState(() {
-            _uploadedImages.add(File(pickedFile.path)); // Add mobile image to the list
+            _uploadedImages.add(File(pickedFile.path));
           });
         }
       } else {
@@ -51,16 +50,34 @@ class _SkillPage2State extends State<SkillPage2> {
     }
   }
 
+  void _goToSkillConfirmationPage(BuildContext context) {
+    if (_uploadedImages.isEmpty && _uploadedWebImages.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Please upload an image or skip.')),
+      );
+    } else {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => SkillConfirmationPage(
+            userSkill: widget.userSkill,
+            uploadedWebImages: _uploadedWebImages,
+            uploadedMobileImages: _uploadedImages,
+            mobileProfileImage: widget.mobileImage,
+            webProfileImage: widget.webImageBytes,
+          ),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [
-              Color(0xFF00008B), // Deep blue
-              Colors.deepPurple, // Medium blue
-            ],
+            colors: [Color(0xFF00008B), Colors.deepPurple],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
@@ -68,7 +85,6 @@ class _SkillPage2State extends State<SkillPage2> {
         child: SafeArea(
           child: Stack(
             children: [
-              // Back button
               Align(
                 alignment: Alignment.topLeft,
                 child: Padding(
@@ -81,33 +97,29 @@ class _SkillPage2State extends State<SkillPage2> {
                   ),
                 ),
               ),
-              // Content in the center
               Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    SizedBox(height: 40,),
-                    // Profile Picture (Always shows profile image)
                     CircleAvatar(
                       radius: 60,
-
                       backgroundColor: Colors.grey[300],
                       backgroundImage: widget.mobileImage != null
-                          ? FileImage(widget.mobileImage!) // For mobile
+                          ? FileImage(widget.mobileImage!)
                           : (widget.webImageBytes != null
-                          ? MemoryImage(widget.webImageBytes!) // For web
-                          : null),
+                              ? MemoryImage(widget.webImageBytes!)
+                              : null),
                     ),
                     SizedBox(height: 20),
-                    // Skill Name
                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                       decoration: BoxDecoration(
                         color: Colors.purpleAccent,
                         borderRadius: BorderRadius.circular(2),
                       ),
                       child: Text(
-                        widget.userSkill, // Display the passed skill name
+                        widget.userSkill,
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -116,109 +128,96 @@ class _SkillPage2State extends State<SkillPage2> {
                       ),
                     ),
                     SizedBox(height: 20),
-                    // Prompt Text
                     Text(
                       "Do you have a picture of your skill?",
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: Colors.white,
-                      ),
+                      style: TextStyle(fontSize: 18, color: Colors.white),
                       textAlign: TextAlign.center,
                     ),
-
                     SizedBox(height: 20),
-                    // Show uploaded skill images as a scrollable list
-                      Container(
-                        height: 200,
-                        padding: EdgeInsets.symmetric(horizontal: 20), // Add padding for the list
-
-                        child: ListView.builder(
-                          scrollDirection: Axis.horizontal,
-
-                          itemCount: _uploadedImages.length + _uploadedWebImages.length,
-                          itemBuilder: (context, index) {
-                            if (index < _uploadedImages.length) {
-                              // For mobile images
-                              return Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Container(
-                                  width: 200, // Fixed width for each image container
-                                  height: double.infinity,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10), // Rounded corners
-                                    border: Border.all(color: Colors.orange), // Border color
-                                    color: Colors.white, // Background color for empty space
-                                  ),
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(10),
-                                    child: Image.file(
-                                      _uploadedImages[index], // Show uploaded mobile image
-                                      fit: BoxFit.cover, // Ensure the image fits within the bounds
-                                    ),
+                    Container(
+                      height: 200,
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount:
+                            _uploadedImages.length + _uploadedWebImages.length,
+                        itemBuilder: (context, index) {
+                          if (index < _uploadedImages.length) {
+                            return Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Container(
+                                width: 200,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(color: Colors.orange),
+                                  color: Colors.white,
+                                ),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: Image.file(
+                                    _uploadedImages[index],
+                                    fit: BoxFit.cover,
                                   ),
                                 ),
-                              );
-                            } else {
-                              // For web images
-                              int webIndex = index - _uploadedImages.length;
-                              return Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Container(
-                                  width: 200, // Fixed width for each image container
-                                  height: double.infinity,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10), // Rounded corners
-                                    border: Border.all(color: Colors.orange), // Border color
-                                    color: Colors.white, // Background color for empty space
-                                  ),
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(10),
-                                    child: Image.memory(
-                                      _uploadedWebImages[webIndex], // Show uploaded web image
-                                      fit: BoxFit.cover   , // Ensure the image fits within the bounds
-                                    ),
+                              ),
+                            );
+                          } else {
+                            int webIndex = index - _uploadedImages.length;
+                            return Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Container(
+                                width: 200,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(color: Colors.orange),
+                                  color: Colors.white,
+                                ),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: Image.memory(
+                                    _uploadedWebImages[webIndex],
+                                    fit: BoxFit.cover,
                                   ),
                                 ),
-                              );
-                            }
-                          },
-                        ),
+                              ),
+                            );
+                          }
+                        },
                       ),
-
+                    ),
                     SizedBox(height: 40),
-                    // Upload Skill Picture Button
                     ElevatedButton(
                       onPressed: () {
-                        _getImage(ImageSource.gallery); // Trigger image selection
+                        _getImage(ImageSource.gallery);
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.orange,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30),
                         ),
-                        padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 40, vertical: 15),
                       ),
                       child: Text(
                         "Upload Skill Picture",
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.black,
-                        ),
+                        style: TextStyle(fontSize: 16, color: Colors.black),
                       ),
                     ),
-
                     SizedBox(height: 20),
-                    // Skip Button
-                    TextButton(
+                    ElevatedButton(
                       onPressed: () {
-                        // Implement skip functionality here
+                        _goToSkillConfirmationPage(context);
                       },
-                      child: Text(
-                        "Skip",
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.orange,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.orange,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
                         ),
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                      ),
+                      child: Text(
+                        "Next",
+                        style: TextStyle(fontSize: 16, color: Colors.black),
                       ),
                     ),
                   ],
